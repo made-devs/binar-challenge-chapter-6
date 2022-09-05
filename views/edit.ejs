@@ -9,26 +9,34 @@
   <body>
     <h1>Edit User game</h1>
 
-    <form action="/update/<%= usergame.id %>" method="POST">
+    <form action="/update/<%= user.usergame.id %>" method="POST">
       <div>
         <label for="">User Name</label>
-        <input type="text" name="username" value="<%= usergame.username %>" />
+        <input
+          type="text"
+          name="username"
+          value="<%= user.usergame.username %>"
+        />
       </div>
       <div>
         <label for="">Password</label>
-        <input type="text" name="password" value="<%= usergame.password %>" />
+        <input
+          type="text"
+          name="password"
+          value="<%= user.usergame.password %>"
+        />
       </div>
       <div>
         <label for="">DOB</label>
-        <input type="date" name="dob" value="<%= usergame.dob %>" />
+        <input type="date" name="dob" value="<%= user.dob %>" />
       </div>
       <div>
         <label for="">POB</label>
-        <input type="text" name="pob" value="<%= usergame.pob %>" />
+        <input type="text" name="pob" value="<%= user.pob %>" />
       </div>
       <div>
         <label for="">City</label>
-        <input type="text" name="city" value="<%= usergame.city %>" />
+        <input type="text" name="city" value="<%= user.city %>" />
       </div>
       <div>
         <label for="">Gender</label>

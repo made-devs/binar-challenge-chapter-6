@@ -34,11 +34,11 @@ app.get("/", async (req, res) => {
 
 app.get("/detail/:id", async (req, res) => {
   const { id } = req.params;
-  const user = await models.usergamebiodata.findOne({
+  const user = await models.usergame.findOne({
     where: {
       id: id,
     },
-    include: [models.usergame],
+    include: [models.usergamebiodata],
   });
   res.render("detail", {
     user: user,
@@ -55,7 +55,7 @@ app.post("/save", async (req, res) => {
   const { username, password } = req.body;
   await models.usergame.create({
     username: username,
-    // password: password,
+    password: password,
   });
   res.redirect("/");
 });
@@ -74,25 +74,54 @@ app.get("/delete/:id", async (req, res) => {
 // edit data
 app.get("/edit/:id", async (req, res) => {
   const { id } = req.params;
-  const usergame = await models.usergame.findOne({
+  const user = await models.usergamebiodata.findOne({
     where: {
       id: id,
     },
+    include: [models.usergame],
   });
 
   res.render("edit", {
-    usergame: usergame,
+    user: user,
   });
+  // res.json(user);
 });
 
 app.post("/update/:id", async (req, res) => {
   const { id } = req.params;
-  const usergame = await models.usergame.findOne({
+  const user = await models.usergame.findOne({
     where: {
       id: id,
     },
   });
-  await usergame.update(req.body);
+  const biodata = await models.usergamebiodata.findOne({
+    where: {
+      id: id,
+    },
+  });
+  await user.update(req.body);
+  await biodata.update(req.body);
+  res.redirect("/");
+});
+
+app.get("/add/:id", async (req, res) => {
+  const { id } = req.params;
+  const user = await models.usergame.findOne({
+    where: { id: id },
+  });
+  res.render("add", { user });
+});
+
+app.post("/add/:id", async (req, res) => {
+  const { id } = req.params;
+  const { usergameId, dob, pob, city, gender } = req.body;
+  await models.usergamebiodata.create({
+    usergameId: usergameId,
+    dob: dob,
+    pob: pob,
+    city: city,
+    gender: gender,
+  });
   res.redirect("/");
 });
 
