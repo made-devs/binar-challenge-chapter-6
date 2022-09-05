@@ -11,3 +11,7 @@ body {
 h1 {
   font-family: "Poppins", sans-serif;
 }
+
+.btn-mainmenu {
+  width: 90px;
+}

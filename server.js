@@ -3,13 +3,27 @@ const fs = require("fs");
 const path = require("path");
 const bodyparser = require("body-parser");
 const session = require("express-session");
+const MaskData = require("maskdata");
+
 const { v4: uuidv4 } = require("uuid");
 const ejs = require("ejs");
 const models = require("./models");
 const app = express();
 const { Op } = require("sequelize");
+const credential = fs.readFileSync("users.json");
+const users = JSON.parse(credential);
+
+const port = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
+
+// masking password
+const password = "pL4Y3r";
+const maskPasswordOpt = {
+  maskWith: "*",
+  maxMaskedCharacters: 16,
+};
+const maskedPassword = MaskData.maskPassword(users.password, maskPasswordOpt);
 
 app.use(
   express.urlencoded({
@@ -19,45 +33,94 @@ app.use(
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: uuidv4(),
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Load static asset
 app.use("/static", express.static(path.join(__dirname, "public")));
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
-// Dashboard user
-app.get("/", async (req, res) => {
-  const searchUser = req.query.search_user;
-  let usergames;
-  if (!searchUser) {
-    usergames = await models.usergame.findAll();
-  } else {
-    usergames = await models.usergame.findAll({
-      where: {
-        username: {
-          [Op.iLike]: `%${searchUser}%`,
-        },
-      },
-    });
-  }
-  res.render("index", {
-    usergames: usergames,
-    search_user: searchUser,
-  });
+app.get("/", (req, res) => {
+  res.render("login");
 });
 
-// Detail user
+// login user
+app.post("/login", (req, res) => {
+  if (req.body.email == users.username && req.body.password == users.password) {
+    req.session.user = req.body.email;
+    res.redirect("/dashboard");
+  } else {
+    res.end("Invalid Username");
+  }
+});
+
+// route for dashboard
+app.get("/dashboard", (req, res) => {
+  if (req.session.user) {
+    res.status(200);
+    res.render("dashboard", { user: req.session.user });
+  } else {
+    res.send("Unauthorize User");
+  }
+});
+
+// route for games
+app.get("/games", (req, res) => {
+  if (req.session.user) {
+    res.status(200);
+    res.render("games", { user: req.session.user });
+  } else {
+    res.send("Unauthorize User");
+  }
+  // res.render("games");
+});
+
+// route for api
+app.get("/api", (req, res) => {
+  res.status(200).send({ username: users.username, password: maskedPassword });
+});
+
+// Dashboard user
+app.get("/index", async (req, res) => {
+  if (req.session.user) {
+    res.status(200);
+    const searchUser = req.query.search_user;
+    let usergames;
+    if (!searchUser) {
+      usergames = await models.usergame.findAll();
+    } else {
+      usergames = await models.usergame.findAll({
+        where: {
+          username: {
+            [Op.iLike]: `%${searchUser}%`,
+          },
+        },
+      });
+    }
+    res.render("index", {
+      usergames: usergames,
+      search_user: searchUser,
+      user: req.session.user,
+    });
+  } else {
+    res.send("Unauthorize User");
+  }
+});
+
 app.get("/detail/:id", async (req, res) => {
   const { id } = req.params;
   const user = await models.usergame.findOne({
-    where: {
-      id: id,
-    },
-    include: [models.usergamebiodata],
+    where: { id: id },
+    include: [models.usergamebiodata, models.usergamehistory],
   });
-  res.render("detail", {
-    user: user,
-  });
-  // res.json(user);
+  const histories = user.usergamehistories;
+
+  res.render("detail", { user, histories });
 });
 
 // Add new user
@@ -71,7 +134,7 @@ app.post("/save", async (req, res) => {
     username: username,
     password: password,
   });
-  res.redirect("/");
+  res.redirect("/index");
 });
 
 // delete user
@@ -115,7 +178,7 @@ app.post("/update/:id", async (req, res) => {
   });
   await user.update(req.body);
   await biodata.update(req.body);
-  res.redirect("/");
+  res.redirect("/index");
 });
 
 // Add biodata user
@@ -137,13 +200,13 @@ app.post("/add/:id", async (req, res) => {
     city: city,
     gender: gender,
   });
-  res.redirect("/");
+  res.redirect("/index");
 });
 
 models.sequelize
   .authenticate()
   .then(() => {
-    app.listen(3000, () => {
+    app.listen(port, () => {
       console.log("listening port: 3000");
     });
   })
