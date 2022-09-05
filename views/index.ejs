@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <h1>User Game</h1>
+    <a href="/create">Add New Data</a>
+    <br />
+    <form action="">
+      <input
+        type="text"
+        name="search_user"
+        placeholder="Enter name here"
+        value="<%= search_user %> "
+      />
+      <button type="submit" class="bg-green-200 p-1">Search</button>
+    </form>
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>User Name</th>
+          <!-- <th>Password</th> -->
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% usergames.forEach(function (usergame) { %>
+        <tr>
+          <td><%= usergame.id %></td>
+          <td><%= usergame.username %></td>
+          <!-- <td><%= usergame.password %></td> -->
+          <td>
+            <a
+              href="/detail/<%= usergame.id %>"
+              class="text-blue-400"
+              onclick="return confirm('Are you sure?')"
+              >Detail</a
+            >
+            |
+            <a
+              href="/edit/<%= usergame.id %>"
+              class="text-blue-400"
+              onclick="return confirm('Are you sure?')"
+              >Edit</a
+            >
+            |
+            <a
+              href="/delete/<%= usergame.id %>"
+              class="text-red-400"
+              onclick="return confirm('Are you sure?')"
+              >Delete</a
+            >
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </body>
+</html>
