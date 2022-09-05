@@ -1,4 +1,9 @@
 const express = require("express");
+const fs = require("fs");
+const path = require("path");
+const bodyparser = require("body-parser");
+const session = require("express-session");
+const { v4: uuidv4 } = require("uuid");
 const ejs = require("ejs");
 const models = require("./models");
 const app = express();
@@ -12,6 +17,14 @@ app.use(
   })
 );
 
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: true }));
+
+// Load static asset
+app.use("/static", express.static(path.join(__dirname, "public")));
+app.use("/assets", express.static(path.join(__dirname, "public/assets")));
+
+// Dashboard user
 app.get("/", async (req, res) => {
   const searchUser = req.query.search_user;
   let usergames;
@@ -32,6 +45,7 @@ app.get("/", async (req, res) => {
   });
 });
 
+// Detail user
 app.get("/detail/:id", async (req, res) => {
   const { id } = req.params;
   const user = await models.usergame.findOne({
@@ -46,7 +60,7 @@ app.get("/detail/:id", async (req, res) => {
   // res.json(user);
 });
 
-// add user
+// Add new user
 app.get("/create", (req, res) => {
   res.render("create");
 });
@@ -71,7 +85,7 @@ app.get("/delete/:id", async (req, res) => {
   res.redirect("/");
 });
 
-// edit data
+// Edit data user
 app.get("/edit/:id", async (req, res) => {
   const { id } = req.params;
   const user = await models.usergamebiodata.findOne({
@@ -104,6 +118,7 @@ app.post("/update/:id", async (req, res) => {
   res.redirect("/");
 });
 
+// Add biodata user
 app.get("/add/:id", async (req, res) => {
   const { id } = req.params;
   const user = await models.usergame.findOne({

@@ -5,34 +5,85 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/detail.css" />
     <title>Document</title>
   </head>
-  <body>
-    <h1>Detail User Game</h1>
-    <table style="width: 100%">
+  <body class="bg-cover">
+    <h1 class="my-10 text-center">Detail User Game</h1>
+    <table
+      class="w-auto content-center text-sm text-left text-gray-500 dark:text-gray-400 mx-auto"
+    >
       <tr>
-        <th>User Game Id</th>
-        <td><%= user.usergamebiodatum.usergameId %></td>
+        <th
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          User Game Id
+        </th>
+        <td
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          <%= user.usergamebiodatum.usergameId %>
+        </td>
       </tr>
       <tr>
-        <th>User Name</th>
-        <td><%= user.username %></td>
+        <th
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          User Name
+        </th>
+        <td
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          <%= user.username %>
+        </td>
       </tr>
       <tr>
-        <th>DOB</th>
-        <td><%= user.usergamebiodatum.dob %></td>
+        <th
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          DOB
+        </th>
+        <td
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          <%= user.usergamebiodatum.dob %>
+        </td>
       </tr>
       <tr>
-        <th>POB</th>
-        <td><%= user.usergamebiodatum.pob %></td>
+        <th
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          POB
+        </th>
+        <td
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          <%= user.usergamebiodatum.pob %>
+        </td>
       </tr>
       <tr>
-        <th>City</th>
-        <td><%= user.usergamebiodatum.city %></td>
+        <th
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          City
+        </th>
+        <td
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          <%= user.usergamebiodatum.city %>
+        </td>
       </tr>
       <tr>
-        <th>Gender</th>
-        <td><%= user.usergamebiodatum.gender %></td>
+        <th
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          Gender
+        </th>
+        <td
+          class="px-10 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        >
+          <%= user.usergamebiodatum.gender %>
+        </td>
       </tr>
     </table>
   </body>
